@@ -1,19 +1,10 @@
 <template>
   <el-form :rules="rules" ref="formRef" :model="form" label-width="120px">
-    <el-form-item label="Title" prop="title">
-      <el-input v-model="form.title" />
+    <el-form-item label="Name" prop="name">
+      <el-input v-model="form.name" />
     </el-form-item>
-    <el-form-item label="Price" prop="price">
-      <el-input-number controls-position="right"  class="custom-column" v-model="form.price" />
-    </el-form-item>
-    <el-form-item label="Description" prop="description">
-      <el-input v-model="form.description" />
-    </el-form-item>
-    <el-form-item label="Link Image">
-      <el-input v-model="form.image" />
-    </el-form-item>
-    <el-form-item label="Category">
-      <el-input v-model="form.category" />
+    <el-form-item label="Email" prop="email">
+      <el-input v-model="form.email" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="addproduct(formRef)">Create</el-button>
@@ -23,35 +14,26 @@
 </template>
 
 <script lang="ts" setup>
-import ProductsRequest from "~/composables/requests/ProductsRequest";
+import UserRequest from "~/composables/requests/UserRequest";
 import { useRouter } from "nuxt/app";
 import type { FormInstance } from "element-plus";
-import { log } from "console";
-
 const formRef = ref<FormInstance>();
 const route = useRouter();
 let form = reactive({
-  title: "",
-  price: "",
-  description: "",
-  image: "",
-  category: "",
+  name: "",
+  email: "",
 });
 const rules = reactive({
-  title: [
+  name: [
     {
       required: true,
-      message: "title is required",
+      message: "Name is required",
     },
   ],
-  price: [
+  email: [
     {
       required: true,
-      message: "price is required",
-    },
-    {
-      type: "number",
-      message: "price is a number",
+      message: "Email is required",
     },
   ],
 });
@@ -61,8 +43,8 @@ const addproduct = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async (valid) => {
     if (valid) {
       try {
-        await ProductsRequest.post(form);
-        route.push("/invoices");
+        await UserRequest.post(form);
+        await route.push("/customer");
       } catch (e) {
       } finally {
       }
@@ -76,7 +58,7 @@ const addproduct = async (formEl: FormInstance | undefined) => {
   .el-input-number__increase {
     display: none;
   }
-  .el-input-number__decrease{
+  .el-input-number__decrease {
     display: none !important;
   }
 }

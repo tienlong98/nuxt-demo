@@ -1,6 +1,6 @@
 <template>
   <Nuxt-Layout name="default">
-    <el-button type="primary" @click="dichuyen()">Add Product</el-button>
+    <el-button type="primary" @click="dichuyen()">Add User</el-button>
     <table-component></table-component>
   </Nuxt-Layout>
 </template>
