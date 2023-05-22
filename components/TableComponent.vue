@@ -64,15 +64,17 @@ const form = reactive({
   name: "",
   email: "",
 });
+//Hàm delete
 const deleteuser = async (id: number) => {
   await UserRequest.delete(id);
   getListUser();
 };
+// Hàm show detail data
 const detailuser = async (id: number) => {
   gridData = await UserRequest.show(id);
   dialogTableVisible.value = true;
 };
-
+// Hàm show thông tin cần edit
 const openDialogUpdate = async (id: number) => {
   const data = await UserRequest.show(id);
   form.id = data.id;
@@ -80,13 +82,13 @@ const openDialogUpdate = async (id: number) => {
   form.email = data.email;
   dialogFormVisible.value = true;
 };
-
+// Hàm edit data
 const editUser = async () => {
   const data = await UserRequest.put(Number(form.id), form);
   dialogFormVisible.value = false;
   getListUser();
 };
-
+//Hàm lấy tất cả thông tin data
 const getListUser = async () => {
   tableData.value = await UserRequest.getList();
 };
