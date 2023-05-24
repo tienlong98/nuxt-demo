@@ -9,11 +9,13 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id     Int     @id @default(autoincrement())
+  email  String  @unique
+  name   String?
+  avatar String?
+  posts  Post[]
 }
 
 model Post {
@@ -23,4 +25,11 @@ model Post {
   published Boolean @default(false)
   author    User    @relation(fields: [authorId], references: [id])
   authorId  Int
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  path      String
+  createdAt DateTime @default(now())
 }

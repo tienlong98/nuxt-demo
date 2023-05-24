@@ -2,9 +2,9 @@
   <!-- v-if="tableData ? (loading = false) : (loading = true)" -->
   <div>
     <!-- <el-button type="primary" @click="getListUser">search</el-button> -->
-    <el-table v-loading="loading" :data="tableData" :empty-text="noData">
-      <el-table-column prop="id" label="Title" width="60" />
-      <el-table-column prop="name" label="Title" width="180" />
+    <el-table :data="tableData" :empty-text="noData">
+      <el-table-column prop="id" label="ID" width="60" />
+      <el-table-column prop="name" label="Title" width="280" />
       <el-table-column prop="email" label="Price" width="180" />
       <el-table-column fixed="right" label="Operations" width="180">
         <template #default="scope">
@@ -32,6 +32,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      :current-page="page"
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="2"
+      @current-change="changePage"
+    />
+
     <el-dialog :model-value="dialogFormVisible" title="Edit Data">
       <el-form :model="form">
         <el-form-item label=" name" :label-width="formLabelWidth">
@@ -58,20 +67,19 @@
 <script lang="ts" setup>
 import { log } from "console";
 import UserRequest from "../composables/requests/UserRequest";
-import {onBeforeMount} from "vue";
+import { onBeforeMount } from "vue";
 const tableData = ref([]);
 let gridData = ref([]);
-const loading = ref(true);
 const dialogFormVisible = ref(false);
 const dialogTableVisible = ref(false);
 const formLabelWidth = "140px";
-const noData = ref("");
-const isMounted = ref(false);
+const total = ref();
 const form = reactive({
   id: "",
   name: "",
   email: "",
 });
+const page = ref(1);
 //Hàm delete
 const deleteuser = async (id: number) => {
   await UserRequest.delete(id);
@@ -82,6 +90,11 @@ const detailuser = async (id: number) => {
   gridData = await UserRequest.show(id);
   dialogTableVisible.value = true;
 };
+
+const changePage = (value: number) => {
+  page.value = value;
+  getListUser();
+}
 // Hàm show thông tin cần edit
 const openDialogUpdate = async (id: number) => {
   const data = await UserRequest.show(id);
@@ -99,20 +112,15 @@ const editUser = async () => {
 //Hàm lấy tất cả thông tin data
 const getListUser = async () => {
   try {
-    loading.value = true;
-    tableData.value = await UserRequest.getList();
+     const data = await UserRequest.getList({ page: page.value});
+     tableData.value = data.data;
+    total.value = data.total.length;
   } catch (e) {
   } finally {
-    loading.value = false;
   }
 };
 
-defineExpose(() => {
-  isMounted
-})
-
 onMounted(async () => {
-  isMounted.value = true;
   await getListUser();
 });
 </script>
